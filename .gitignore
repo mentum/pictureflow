@@ -1,2 +1,5 @@
 *.pyc
 .idea/*
+pictureflow.egg-info/*
+build/*
+dist/*

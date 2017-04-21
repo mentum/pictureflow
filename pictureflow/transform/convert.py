@@ -25,7 +25,7 @@ class Convert(Node):
 
     def apply(self, item):
 
-        frm = next(self.src).upper()
+        frm = item.color_space
         tgt = next(self.dest).upper()
 
         item.id += '-cvt2{}'.format(tgt)
