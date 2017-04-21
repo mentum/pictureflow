@@ -3,10 +3,23 @@ from copy import copy
 
 class Node(object):
 
+    """
+    Base unit of the PictureFlow architecture. All structures capable of manipulating items should inherit from this
+    one. The :py:func:`apply()` method tasked with actually applying the manipulations, override it as necessary.
+    
+    :py:class:`Node` is also an iterator, meaning that iterating on a node will yield the transformed output of this
+    node's parent.
+    
+    Args:
+        parent (Node): Parent node of this node
+        id (str): ID of the node
+    """
+
     _input_type = None
     _output_type = None
 
     def __init__(self, parent=None, id='node'):
+
         self.id = id
 
         # Check if parent output is compatible with current input
@@ -39,5 +52,15 @@ class Node(object):
         return out
 
     def apply(self, item):
+        """
+        Base apply method, does nothing.
+        
+        Args:
+            item (Any): Input item
+
+        Returns:
+            typeof(item): Input item
+
+        """
         # Base node does nothing
         return item

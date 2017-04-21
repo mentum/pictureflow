@@ -13,6 +13,7 @@ readme = 'See https://github.com/mentum/pictureflow for README.'
 setup(
     name='pictureflow',
     author='mentum',
+    author_email='dalloriam@gmail.com',
     url='https://github.com/mentum/pictureflow',
     version=version,
     packages=find_packages(),
