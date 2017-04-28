@@ -10,3 +10,5 @@ Welcome to PictureFlow's documentation!
    :caption: Package Overview
 
    src/core
+   src/transform
+   src/output

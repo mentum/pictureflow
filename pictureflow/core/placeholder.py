@@ -4,8 +4,9 @@ from pictureflow.core import Node
 class Placeholder(Node):
 
     """
-    :py:class:`Placeholder` is the only parent-less node included with PictureFlow. It is most often used as an entry
-    point for the transformation graph, as its value will be substituted at runtime by :py:class:`Session`.
+    Along with :py:class:`Constant`, :py:class:`Placeholder` is the only parent-less node included with PictureFlow. 
+    It is most often used as an entry point for the transformation graph, as its value will be substituted at runtime 
+    by :py:class:`Session`.
     
     Args:
         id (str): ID of the placeholder

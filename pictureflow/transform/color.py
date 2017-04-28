@@ -4,6 +4,15 @@ from pictureflow.core import Image, Node
 
 class ColorMask(Node):
 
+    """
+    Apply a color mask to the image.
+    
+    Args:
+        parent (Node<Image>): Parent node
+        color_mask (Node<List>): Color mask to apply (:code:`None` to ignore the color component)
+        id (str): ID of the node
+    """
+
     _input_type = Image
     _output_type = Image
 

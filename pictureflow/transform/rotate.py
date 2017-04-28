@@ -6,6 +6,15 @@ import cv2
 
 class Rotate(Node):
 
+    """
+    Rotate an image.
+    
+    Args:
+        parent (Node<Image>): Parent node
+        rot_angle (Node<int>): Angle of rotation (defaults to 90 degrees when left blank)
+        id (str): ID of the node
+    """
+
     _input_type = Image
     _output_type = Image
 

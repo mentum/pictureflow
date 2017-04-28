@@ -5,6 +5,15 @@ import cv2
 
 class Scale(Node):
 
+    """
+    Scale an image
+    
+    Args:
+        parent (Node<Image>): Parent node
+        scale_factor (Node<float>): Scale factor
+        id (str): ID of the node
+    """
+
     _input_type = Image
     _output_type = Image
 

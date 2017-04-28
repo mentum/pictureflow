@@ -6,6 +6,15 @@ import os
 
 class DiskOutput(Node):
 
+    """
+    Output an image to disk
+    
+    Args:
+        parent (Node<Image>): Parent node
+        base_path (Node<string>): Output directory (will be created if nonexistent
+        id (str): ID of the node
+    """
+
     _input_type = Image
 
     def __init__(self, parent, base_path, id='disk-output'):
