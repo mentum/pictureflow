@@ -18,18 +18,23 @@ class PathMask(Node):
     _input_type = Image
     _output_type = Image
 
-    def __init__(self, parent, path, id='path-mask'):
-        super().__init__(path, id)
+    def __init__(self, parent, path, id='path_mask'):
+        super().__init__(parent, id)
 
         self.paths = path
 
-    def apply(self, img):
+    def apply(self, item):
 
         pth = next(self.paths)
+
+        item.id += f'-{self.id}'
+        img = item.img_mat
 
         mask = np.zeros(img.shape, np.uint8)
         channel_count = img.shape[2]
 
         ignore_mask_color = (255,) * channel_count
         cv2.fillPoly(mask, [pth], ignore_mask_color)
-        return cv2.bitwise_and(img, mask)
+
+        item.img_mat = cv2.bitwise_and(img, mask)
+        return item
