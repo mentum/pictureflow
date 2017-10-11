@@ -15,9 +15,14 @@ class Constant(Node):
     def __init__(self, value, id='constant'):
         super().__init__(id=id)
 
+        self._output_type = type(value)
+
         def iterator():
             while True:
                 yield self.value
 
-        self.parent = iterator()
+        self.parents = [iterator()]
         self.value = value
+
+    def apply(self, val):
+        yield val

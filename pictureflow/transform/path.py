@@ -15,17 +15,13 @@ class PathMask(Node):
         path (Node<np.array>): List of points forming the path
     """
 
-    _input_type = Image
+    _input_type = [Image, np.ndarray]
     _output_type = Image
 
     def __init__(self, parent, path, id='path_mask'):
-        super().__init__(parent, id)
+        super().__init__(id, parent, path)
 
-        self.paths = path
-
-    def apply(self, item):
-
-        pth = next(self.paths)
+    def apply(self, item, pth):
 
         item.id += f'-{self.id}'
         img = item.img_mat

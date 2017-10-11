@@ -1,30 +1,34 @@
 from pictureflow.core import Image, Node
 
+from pictureflow.flow import Broadcast
+from pictureflow.transform import Convert
+from pictureflow.vision import ContourDetector
+
+
 import cv2
+
+import pictureflow as pf
 
 
 class ObjectDetector(Node):
 
-    _input_type = Image
+    _input_type = [Image, list, int]
     _output_type = Image
 
     def __init__(self, parent, path_drop_threshold, tgt_size, id='detect_obj'):
-        super().__init__(parent, id)
 
-        self.drop_threshold = path_drop_threshold
-        self.tgt_size = tgt_size
+        # Broadcast to send the raw image to the object detector & to the contour detector
+        broadcast = Broadcast(parent, pf.Constant(2))
 
-    def apply(self, item):
+        # Contour detection branch
+        grayscale = Convert(broadcast, pf.Constant('gray'))
+        contours = ContourDetector(grayscale, path_drop_threshold)
+
+        super().__init__(id, broadcast, contours, tgt_size)
+
+    def apply(self, item, contours, tgt_size):
         item.id = f'{item.id}-{self.id}'
         img_raw = item.img_mat
-
-        gray = cv2.cvtColor(img_raw, cv2.COLOR_BGR2GRAY)
-
-        gray[gray > 0] = 255
-        _, contours, _ = cv2.findContours(gray, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-
-        drop_thresh = next(self.drop_threshold)
-        tgt_size = next(self.tgt_size)
 
         # Crop around each object
         dropped = 0
@@ -34,10 +38,6 @@ class ObjectDetector(Node):
 
             max_y = obj_contour[:, :, 1].max()
             min_y = obj_contour[:, :, 1].min()
-
-            if (max_x - min_x) * (max_y - min_y) <= drop_thresh:
-                dropped += 1
-                continue
 
             object_width = max_x - min_x
             object_height = max_y - min_y

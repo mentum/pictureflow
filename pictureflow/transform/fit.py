@@ -6,16 +6,14 @@ import numpy as np
 
 class FitToSize(Node):
 
-    _input_type = Image
+    _input_type = [Image, int]
     _output_type = Image
 
     def __init__(self, parent, tgt_size, id='size_fit'):
-        super().__init__(parent, id)
-        self.tgt_size = tgt_size
+        super().__init__(id, parent, tgt_size)
 
-    def apply(self, item):
+    def apply(self, item, tgt_size):
         img_raw = item.img_mat
-        tgt_size = next(self.tgt_size)
 
         item.id += f'-{self.id}{tgt_size}'
 

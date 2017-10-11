@@ -15,19 +15,16 @@ class Rotate(Node):
         id (str): ID of the node
     """
 
-    _input_type = Image
+    _input_type = [Image, int]
     _output_type = Image
 
     def __init__(self, parent, rot_angle=None, id='rotate'):
-        super().__init__(parent, id)
-
         if rot_angle is None:
             rot_angle = Constant(value=90)
 
-        self.rot_angle = rot_angle
+        super().__init__(id, parent, rot_angle)
 
-    def apply(self, item):
-        rotation = next(self.rot_angle)
+    def apply(self, item, rotation):
 
         item.id += '-rotate' + str(rotation)
         img = item.img_mat

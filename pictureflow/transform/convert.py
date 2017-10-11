@@ -15,23 +15,21 @@ class Convert(Node):
         id (str): ID of the node
     """
 
-    _input_type = Image
+    _input_type = [Image, str]
     _output_type = Image
 
     def __init__(self, parent, dest=None, id='torgb'):
-        super().__init__(parent, id)
-
-        self.flags = [i for i in dir(cv2) if i.startswith('COLOR_')]
-
         if dest is None:
             dest = Constant('rgb')
 
-        self.dest = dest
+        super().__init__(id, parent, dest)
 
-    def apply(self, item):
+        self.flags = [i for i in dir(cv2) if i.startswith('COLOR_')]
+
+    def apply(self, item, tgt):
 
         frm = item.color_space.upper()
-        tgt = next(self.dest).upper()
+        tgt = tgt.upper()
 
         item.id += '-cvt2{}'.format(tgt)
         item.color_space = tgt

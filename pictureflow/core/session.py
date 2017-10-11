@@ -35,7 +35,7 @@ class SessionWrapper(object):
 
         for placeholder, values in self._ctx.items():
             # TODO: Check for iterable dimensions
-            placeholder.parent = value_feed(values)
+            placeholder.parents = [value_feed(values)]
 
         for itm in graph:
             yield itm

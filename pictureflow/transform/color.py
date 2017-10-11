@@ -13,21 +13,17 @@ class ColorMask(Node):
         id (str): ID of the node
     """
 
-    _input_type = Image
+    _input_type = [Image, list]
     _output_type = Image
 
     def __init__(self, parent, color_mask=None, id='colormask'):
-        super().__init__(parent, id)
-
         if color_mask is None:
             color_mask = Constant(value=[None, None, None])
 
-        self.color_mask = color_mask
+        super().__init__(id, parent, color_mask)
 
-    def apply(self, item):
+    def apply(self, item, mask):
         item.id += '-colormask'
-
-        mask = next(self.color_mask)
 
         img = item.img_mat
 

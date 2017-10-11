@@ -15,28 +15,37 @@ class Node(object):
         id (str): ID of the node
     """
 
-    _input_type = None
+    _input_type = None  # Typecheck disabled by default
     _output_type = None
 
-    def __init__(self, parent=None, id='node'):
+    def __init__(self, id='node', *parents):
 
         self.id = id
 
-        # Check if parent output is compatible with current input
-        if self._input_type is not None and parent is not None and parent._output_type != self._input_type:
-            parent_name = parent.__class__.__name__
-            parent_type = parent._output_type.__name__ if parent._output_type else str(parent._output_type)
-            input_type = self._input_type.__name__ if self._input_type else str(self._input_type)
-            raise TypeError(f'"{parent_name}" output "{parent_type}" is not compatible with input "{input_type}"')
+        self._typecheck_enabled = isinstance(self._input_type, list)
+
+        if self._typecheck_enabled:
+            if len(self._input_type) != len(parents):
+                raise TypeError(f'Node is expecting {len(self._input_type)} inputs, got {len(parents)}')
+
+            for i, parent in enumerate(parents):
+                if parent._output_type != self._input_type[i]:
+                    parent_name = parent.__class__.__name__
+                    parent_type = parent._output_type.__name__ if parent._output_type else str(parent._output_type)
+                    input_type = self._input_type[i].__name__ if self._input_type[i] else str(self._input_type[i])
+                    raise TypeError(f'"{parent_name}" output "{parent_type}" is not compatible with input "{input_type}"')
 
         self._iterator = self._get_iterator()
 
-        self.parent = parent
+        self.parents = parents
 
     def _get_iterator(self):
-        for child in self.parent:
-            cp = copy(child)
-            yield from self._apply_typecheck(cp)
+        try:
+            while True:
+                args = [copy(next(parent)) for parent in self.parents]
+                yield from self._apply_typecheck(*args)
+        except StopIteration:
+            return
 
     def __iter__(self):
         return self._iterator
@@ -44,19 +53,21 @@ class Node(object):
     def __next__(self):
         return next(self._iterator)
 
-    def _apply_typecheck(self, item):
+    def _apply_typecheck(self, *args):
 
         # TODO: Improve error message generation
 
-        if self._input_type is not None and not isinstance(item, self._input_type):
-            raise TypeError(f'Node {self.id} expected an object of type {self._input_type} but got {type(item)}')
+        if self._typecheck_enabled:
+            for i, arg in enumerate(args):
+                if type(arg) != self._input_type[i]:
+                    raise TypeError(f'Node {self.id} expected an object of type {self._input_type[i]} but got {type(arg)}')
 
-        for output_item in self.apply(item):
+        for output_item in self.apply(*args):
             if self._output_type is not None and not isinstance(output_item, self._output_type):
-                raise TypeError(f'Node {self.id} should return an object of type {self._output_type} but returned a {type(item)}')
+                raise TypeError(f'Node {self.id} should return an object of type {self._output_type} but returned a {type(output_item)}')
             yield output_item
 
-    def apply(self, item):
+    def apply(self, *args):
         """
         Base apply method, does nothing.
         
@@ -68,4 +79,4 @@ class Node(object):
 
         """
         # Base node does nothing
-        yield item
+        yield args
