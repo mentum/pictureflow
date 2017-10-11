@@ -16,6 +16,7 @@ class DiskOutput(Node):
     """
 
     _input_type = Image
+    _output_type = Image
 
     def __init__(self, parent, base_path, id='disk-output'):
         super().__init__(parent, id)
@@ -29,4 +30,4 @@ class DiskOutput(Node):
 
         cv2.imwrite(os.path.join(pth, str(img)), img.img_mat)
 
-        return img
+        yield img

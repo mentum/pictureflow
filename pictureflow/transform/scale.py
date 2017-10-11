@@ -28,4 +28,4 @@ class Scale(Node):
         height, width = image.img_mat.shape[:2]
         image.img_mat = cv2.resize(image.img_mat, (int(scaling * width), int(scaling * height)))
 
-        return image
+        yield image

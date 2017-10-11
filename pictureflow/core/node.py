@@ -29,13 +29,20 @@ class Node(object):
             input_type = self._input_type.__name__ if self._input_type else str(self._input_type)
             raise TypeError(f'"{parent_name}" output "{parent_type}" is not compatible with input "{input_type}"')
 
+        self._iterator = self._get_iterator()
+
         self.parent = parent
 
+    def _get_iterator(self):
+        for child in self.parent:
+            cp = copy(child)
+            yield from self._apply_typecheck(cp)
+
     def __iter__(self):
-        return self
+        return self._iterator
 
     def __next__(self):
-        return self._apply_typecheck(copy(next(self.parent)))
+        return next(self._iterator)
 
     def _apply_typecheck(self, item):
 
@@ -44,12 +51,10 @@ class Node(object):
         if self._input_type is not None and not isinstance(item, self._input_type):
             raise TypeError(f'Node {self.id} expected an object of type {self._input_type} but got {type(item)}')
 
-        out = self.apply(item)
-
-        if self._output_type is not None and not isinstance(out, self._output_type):
-            raise TypeError(f'Node {self.id} should return an object of type {self._output_type} but returned a {type(item)}')
-
-        return out
+        for output_item in self.apply(item):
+            if self._output_type is not None and not isinstance(output_item, self._output_type):
+                raise TypeError(f'Node {self.id} should return an object of type {self._output_type} but returned a {type(item)}')
+            yield output_item
 
     def apply(self, item):
         """
@@ -63,4 +68,4 @@ class Node(object):
 
         """
         # Base node does nothing
-        return item
+        yield item

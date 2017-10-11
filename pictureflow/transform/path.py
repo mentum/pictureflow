@@ -37,4 +37,4 @@ class PathMask(Node):
         cv2.fillPoly(mask, [pth], ignore_mask_color)
 
         item.img_mat = cv2.bitwise_and(img, mask)
-        return item
+        yield item

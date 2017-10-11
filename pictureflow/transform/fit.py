@@ -43,4 +43,5 @@ class FitToSize(Node):
         new_img = img_raw[start_y:start_y + window_width, start_x:start_x + window_width]
 
         item.img_mat = cv2.resize(new_img, (tgt_size, tgt_size))
-        return item
+
+        yield item

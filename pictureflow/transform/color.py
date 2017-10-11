@@ -37,4 +37,4 @@ class ColorMask(Node):
 
         item.img_mat = img
 
-        return item
+        yield item

@@ -44,4 +44,4 @@ class Convert(Node):
 
         item.img_mat = cv2.cvtColor(item.img_mat, cvt)
 
-        return item
+        yield item

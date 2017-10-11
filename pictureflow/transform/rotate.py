@@ -40,4 +40,4 @@ class Rotate(Node):
 
         item.img_mat = dst
 
-        return item
+        yield item
