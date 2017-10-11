@@ -27,7 +27,7 @@ class ObjectDetector(Node):
         super().__init__(id, broadcast, contours, tgt_size)
 
     def apply(self, item, contours, tgt_size):
-        item.id = f'{item.id}-{self.id}'
+        item.id += f'-{self.id}'
         img_raw = item.img_mat
 
         # Crop around each object
@@ -52,5 +52,5 @@ class ObjectDetector(Node):
 
             new_img = img_raw[start_y:start_y + window_width, start_x:start_x + window_width]
 
-            new_item = Image(f'{item.id}-seq_{i - dropped}', item.ext, cv2.resize(new_img, (tgt_size, tgt_size)))
+            new_item = Image(f'{item.id}({i - dropped})', item.ext, cv2.resize(new_img, (tgt_size, tgt_size)))
             yield new_item

@@ -23,7 +23,7 @@ class ColorMask(Node):
         super().__init__(id, parent, color_mask)
 
     def apply(self, item, mask):
-        item.id += '-colormask'
+        item.id += f'-{self.id}'
 
         img = item.img_mat
 

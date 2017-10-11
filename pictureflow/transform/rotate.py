@@ -26,7 +26,7 @@ class Rotate(Node):
 
     def apply(self, item, rotation):
 
-        item.id += '-rotate' + str(rotation)
+        item.id += f'-{self.id}({rotation})'
         img = item.img_mat
 
         rows, cols = img.shape[:2]

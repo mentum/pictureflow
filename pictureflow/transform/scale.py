@@ -21,7 +21,7 @@ class Scale(Node):
         super().__init__(id, parent, scale_factor)
 
     def apply(self, image, scaling):
-        image.id += '-scale' + str(scaling)
+        image.id += f'-{self.id}({scaling})'
 
         height, width = image.img_mat.shape[:2]
         image.img_mat = cv2.resize(image.img_mat, (int(scaling * width), int(scaling * height)))

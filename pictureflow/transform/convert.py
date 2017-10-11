@@ -18,7 +18,7 @@ class Convert(Node):
     _input_type = [Image, str]
     _output_type = Image
 
-    def __init__(self, parent, dest=None, id='torgb'):
+    def __init__(self, parent, dest=None, id='convert'):
         if dest is None:
             dest = Constant('rgb')
 
@@ -31,11 +31,11 @@ class Convert(Node):
         frm = item.color_space.upper()
         tgt = tgt.upper()
 
-        item.id += '-cvt2{}'.format(tgt)
+        item.id += f'-{self.id}({tgt})'
         item.color_space = tgt
 
         try:
-            cvt = getattr(cv2, 'COLOR_{0}2{1}'.format(frm, tgt))
+            cvt = getattr(cv2, f'COLOR_{frm}2{tgt}')
 
         except AttributeError:
             raise
