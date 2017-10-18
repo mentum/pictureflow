@@ -6,10 +6,10 @@ class Node(object):
     """
     Base unit of the PictureFlow architecture. All structures capable of manipulating items should inherit from this
     one. The :py:func:`apply()` method tasked with actually applying the manipulations, override it as necessary.
-    
+
     :py:class:`Node` is also an iterator, meaning that iterating on a node will yield the transformed output of this
     node's parent.
-    
+
     Args:
         parent (Node<Image>): Parent node of this node
         id (str): ID of the node
@@ -67,10 +67,16 @@ class Node(object):
                 raise TypeError(f'Node {self.id} should return an object of type {self._output_type} but returned a {type(output_item)}')
             yield output_item
 
+    def reset(self):
+        self._iterator = self._get_iterator()
+
+        for p in self.parents:
+            p.reset()
+
     def apply(self, *args):
         """
         Base apply method, does nothing.
-        
+
         Args:
             item (Any): Input item
 
