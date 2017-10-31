@@ -1,9 +1,35 @@
+class PlaceholderGenerator(object):
+
+    def __init__(self, vals):
+        self.values = vals
+        self._iterator = self._get_iterator()
+
+    def _get_iterator(self):
+        try:
+            for val in self.values:
+                yield val
+
+        except TypeError:
+            # not iterable
+            while True:
+                yield self.values
+
+    def reset(self):
+        pass
+
+    def __iter__(self):
+        return self._iterator
+
+    def __next__(self):
+        return next(self._iterator)
+
+
 class SessionWrapper(object):
 
     """
     Session object used to execute transformation graphs. Do not instantiate directly, instead get one via
     a :py:class:`Session` context manager.
-    
+
     Args:
         ctx: Placeholder context
     """
@@ -14,7 +40,7 @@ class SessionWrapper(object):
     def run(self, graph):
         """
         Do a lazy run of a transformation graph
-        
+
         Args:
             graph (Node): Graph to execute
 
@@ -22,32 +48,25 @@ class SessionWrapper(object):
             iterator: Results iterator
 
         """
-        def value_feed(vals):
-            # Determine if vals is single-value or an iterable
-            try:
-                for val in vals:
-                    yield val
-
-            except TypeError:
-                # not iterable
-                while True:
-                    yield vals
 
         for placeholder, values in self._ctx.items():
             # TODO: Check for iterable dimensions
-            placeholder.parent = value_feed(values)
+            placeholder.parents = [PlaceholderGenerator(values)]
+
+        graph.reset()
 
         for itm in graph:
             yield itm
 
         # Unregister ctx from graph
         for placeholder in self._ctx:
-            placeholder.parent = None
+            placeholder.parents = []
+
 
     def run_sync(self, graph):
         """
         Do a synchronous run of a transformation graph.
-        
+
         Args:
             graph (Node): Graph to execute
 
@@ -68,7 +87,7 @@ class Session(object):
     """
     :py:class:`Session` is a context manager tasked with attaching and detaching a provided context to one (or multiple)
     transformation graph(s).
-    
+
     Args:
         feed_dict (:code:`{Node: [values]}`): Dictionary providing context mapping
     """

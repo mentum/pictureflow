@@ -21,7 +21,7 @@ setup(
     description='Image processing with a tensorflow-inspired API',
     long_description=readme,
     install_requires=[
-        "numpy==1.12.1",
-        "opencv-python==3.2.0.6"
+        "numpy",
+        "opencv-python==3.3.0.10"
     ]
 )

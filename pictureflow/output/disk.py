@@ -15,15 +15,13 @@ class DiskOutput(Node):
         id (str): ID of the node
     """
 
-    _input_type = Image
+    _input_types = [Image, str]
     _output_type = Image
 
-    def __init__(self, parent, base_path, id='disk-output'):
-        super().__init__(parent, id)
-        self.base_path = base_path
+    def __init__(self, parent, base_path, id='disk'):
+        super().__init__(id, parent, base_path)
 
-    def apply(self, img):
-        pth = next(self.base_path)
+    def apply(self, img, pth):
 
         if not os.path.isdir(pth):
             os.mkdir(pth)
