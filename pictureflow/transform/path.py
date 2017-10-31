@@ -15,7 +15,7 @@ class PathMask(Node):
         path (Node<np.array>): List of points forming the path
     """
 
-    _input_type = [Image, np.ndarray]
+    _input_types = [Image, np.ndarray]
     _output_type = Image
 
     def __init__(self, parent, path, id='path_mask'):

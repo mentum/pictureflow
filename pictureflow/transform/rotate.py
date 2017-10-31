@@ -15,7 +15,7 @@ class Rotate(Node):
         id (str): ID of the node
     """
 
-    _input_type = [Image, int]
+    _input_types = [Image, int]
     _output_type = Image
 
     def __init__(self, parent, rot_angle=None, id='rotate'):

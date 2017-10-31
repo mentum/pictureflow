@@ -1,4 +1,4 @@
-from pictureflow.core import Image, Node
+from pictureflow.core import Image, Node, Constant
 
 from pictureflow.flow import Broadcast
 from pictureflow.transform import Convert
@@ -7,21 +7,19 @@ from pictureflow.vision import ContourDetector
 
 import cv2
 
-import pictureflow as pf
-
 
 class ObjectDetector(Node):
 
-    _input_type = [Image, list, int]
+    _input_types = [Image, list, int]
     _output_type = Image
 
     def __init__(self, parent, path_drop_threshold, tgt_size, id='detect_obj'):
 
         # Broadcast to send the raw image to the object detector & to the contour detector
-        broadcast = Broadcast(parent, pf.Constant(2))
+        broadcast = Broadcast(parent, Constant(2))
 
         # Contour detection branch
-        grayscale = Convert(broadcast, pf.Constant('gray'))
+        grayscale = Convert(broadcast, Constant('gray'))
         contours = ContourDetector(grayscale, path_drop_threshold)
 
         super().__init__(id, broadcast, contours, tgt_size)

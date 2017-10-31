@@ -13,7 +13,7 @@ class ColorMask(Node):
         id (str): ID of the node
     """
 
-    _input_type = [Image, list]
+    _input_types = [Image, list]
     _output_type = Image
 
     def __init__(self, parent, color_mask=None, id='colormask'):

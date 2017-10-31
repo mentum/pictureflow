@@ -2,8 +2,8 @@ from pictureflow.core import Node, Image
 
 
 class Broadcast(Node):
-    _input_type = [Image, int]
-    _output_type = Image
+    _input_types = [None, int]
+    _output_type = None
 
     def __init__(self, parent, count):
         super().__init__('broadcast', parent, count)

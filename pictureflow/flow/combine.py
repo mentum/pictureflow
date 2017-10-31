@@ -3,8 +3,8 @@ from pictureflow.core import Node, Image
 
 class Combine(Node):
 
-    _input_type = None
-    _output_type = Image
+    _input_types = None
+    _output_type = None
 
     def __init__(self, *parents):
         super().__init__('combine', *parents)

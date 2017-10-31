@@ -15,7 +15,7 @@ class DiskOutput(Node):
         id (str): ID of the node
     """
 
-    _input_type = [Image, str]
+    _input_types = [Image, str]
     _output_type = Image
 
     def __init__(self, parent, base_path, id='disk'):

@@ -14,7 +14,7 @@ class Scale(Node):
         id (str): ID of the node
     """
 
-    _input_type = [Image, float]
+    _input_types = [Image, float]
     _output_type = Image
 
     def __init__(self, parent, scale_factor, id='scale'):

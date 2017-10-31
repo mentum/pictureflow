@@ -15,14 +15,14 @@ class Convert(Node):
         id (str): ID of the node
     """
 
-    _input_type = [Image, str]
-    _output_type = Image
+    _input_types = [Image, str]
+    _output_type = None
 
-    def __init__(self, parent, dest=None, id='convert'):
+    def __init__(self, parents, dest=None, id='convert'):
         if dest is None:
             dest = Constant('rgb')
 
-        super().__init__(id, parent, dest)
+        super().__init__(id, parents, dest)
 
         self.flags = [i for i in dir(cv2) if i.startswith('COLOR_')]
 

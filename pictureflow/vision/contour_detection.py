@@ -5,7 +5,7 @@ import cv2
 
 class ContourDetector(Node):
 
-    _input_type = [Image, int]
+    _input_types = [Image, int]
     _output_type = list
 
     def __init__(self, parent, drop_threshold, id='contour_detect'):
