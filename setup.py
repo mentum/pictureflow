@@ -13,6 +13,7 @@ readme = 'See https://github.com/mentum/pictureflow for README.'
 setup(
     name='pictureflow',
     author='mentum',
+    author_email='dalloriam@gmail.com',
     url='https://github.com/mentum/pictureflow',
     version=version,
     packages=find_packages(),
@@ -20,7 +21,7 @@ setup(
     description='Image processing with a tensorflow-inspired API',
     long_description=readme,
     install_requires=[
-        "numpy==1.12.1",
-        "opencv-python==3.2.0.6"
+        "numpy",
+        "opencv-python==3.3.0.10"
     ]
 )

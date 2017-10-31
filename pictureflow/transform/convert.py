@@ -6,36 +6,40 @@ import cv2
 
 class Convert(Node):
 
-    _input_type = Image
-    _output_type = Image
+    """
+    Converts an :py:class:`Image` from its original color space to another.
+    
+    Args:
+        parent (Node<Image>): Parent node
+        dest (Node<str>): Desired colorspace
+        id (str): ID of the node
+    """
 
-    def __init__(self, parent, src=None, dest=None, id='torgb'):
-        super().__init__(parent, id)
+    _input_types = [Image, str]
+    _output_type = None
 
-        self.flags = [i for i in dir(cv2) if i.startswith('COLOR_')]
-
-        if src is None:
-            src = Constant('bgr')
-
+    def __init__(self, parents, dest=None, id='convert'):
         if dest is None:
             dest = Constant('rgb')
 
-        self.src = src
-        self.dest = dest
+        super().__init__(id, parents, dest)
 
-    def apply(self, item):
+        self.flags = [i for i in dir(cv2) if i.startswith('COLOR_')]
+
+    def apply(self, item, tgt):
 
         frm = item.color_space.upper()
-        tgt = next(self.dest).upper()
+        tgt = tgt.upper()
 
-        item.id += '-cvt2{}'.format(tgt)
+        item.id += f'-{self.id}({tgt})'
+        item.color_space = tgt
 
         try:
-            cvt = getattr(cv2, 'COLOR_{0}2{1}'.format(frm, tgt))
+            cvt = getattr(cv2, f'COLOR_{frm}2{tgt}')
 
         except AttributeError:
             raise
 
         item.img_mat = cv2.cvtColor(item.img_mat, cvt)
 
-        return item
+        yield item

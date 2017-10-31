@@ -6,21 +6,27 @@ import cv2
 
 class Rotate(Node):
 
-    _input_type = Image
+    """
+    Rotate an image.
+    
+    Args:
+        parent (Node<Image>): Parent node
+        rot_angle (Node<int>): Angle of rotation (defaults to 90 degrees when left blank)
+        id (str): ID of the node
+    """
+
+    _input_types = [Image, int]
     _output_type = Image
 
     def __init__(self, parent, rot_angle=None, id='rotate'):
-        super().__init__(parent, id)
-
         if rot_angle is None:
             rot_angle = Constant(value=90)
 
-        self.rot_angle = rot_angle
+        super().__init__(id, parent, rot_angle)
 
-    def apply(self, item):
-        rotation = next(self.rot_angle)
+    def apply(self, item, rotation):
 
-        item.id += '-rotate' + str(rotation)
+        item.id += f'-{self.id}({rotation})'
         img = item.img_mat
 
         rows, cols = img.shape[:2]
@@ -31,4 +37,4 @@ class Rotate(Node):
 
         item.img_mat = dst
 
-        return item
+        yield item
