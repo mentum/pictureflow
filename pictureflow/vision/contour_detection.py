@@ -5,6 +5,14 @@ import cv2
 
 class ContourDetector(Node):
 
+    """
+    Performs contour detection steps on a previously-masked image.
+
+    Args:
+        parent (Node<Any>): Parent nodes
+        drop_threshold (Node<int>): Minimum allowed contour area
+    """
+
     _input_types = [Image, int]
     _output_type = list
 
