@@ -1,3 +1,6 @@
+from copy import deepcopy
+
+
 class PlaceholderGenerator(object):
 
     def __init__(self, vals):
@@ -7,12 +10,12 @@ class PlaceholderGenerator(object):
     def _get_iterator(self):
         try:
             for val in self.values:
-                yield val
+                yield deepcopy(val)
 
         except TypeError:
             # not iterable
             while True:
-                yield self.values
+                yield deepcopy(self.values)
 
     def reset(self):
         pass
