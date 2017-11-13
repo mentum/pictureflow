@@ -1,7 +1,7 @@
 from copy import deepcopy
 
 
-class PlaceholderGenerator(object):
+class _PlaceholderGenerator(object):
 
     def __init__(self, vals):
         self.values = vals
@@ -54,7 +54,7 @@ class SessionWrapper(object):
 
         for placeholder, values in self._ctx.items():
             # TODO: Check for iterable dimensions
-            placeholder.parents = [PlaceholderGenerator(values)]
+            placeholder.parents = [_PlaceholderGenerator(values)]
 
         graph.reset()
 
@@ -64,7 +64,6 @@ class SessionWrapper(object):
         # Unregister ctx from graph
         for placeholder in self._ctx:
             placeholder.parents = []
-
 
     def run_sync(self, graph):
         """
