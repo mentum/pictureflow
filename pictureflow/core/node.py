@@ -38,7 +38,7 @@ class Node(object):
                 if parent._output_type is None or self._input_types[i] is None:
                     continue
 
-                if parent._output_type != self._input_types[i] and parent._output_type :
+                if parent._output_type != self._input_types[i] and parent._output_type:
                     parent_name = parent.__class__.__name__
                     parent_type = parent._output_type.__name__ if parent._output_type else str(parent._output_type)
                     input_type = self._input_types[i].__name__ if self._input_types[i] else str(self._input_types[i])
@@ -55,7 +55,7 @@ class Node(object):
     def _validate_runtime_output(self, item):
         if self._typecheck_enabled:
             if self._output_type is not None and not isinstance(item, self._output_type):
-                raise TypeError(f'Node {self.id} should return an object of type {self._output_type} but returned a {type(output_item)}')
+                raise TypeError(f'Node {self.id} should return an object of type {self._output_type} but returned a {type(item)}')
 
     def _get_iterator(self):
         try:
