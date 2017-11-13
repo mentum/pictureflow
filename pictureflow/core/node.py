@@ -1,6 +1,3 @@
-from copy import copy
-
-
 class Node(object):
 
     """
@@ -60,11 +57,10 @@ class Node(object):
             if self._output_type is not None and not isinstance(item, self._output_type):
                 raise TypeError(f'Node {self.id} should return an object of type {self._output_type} but returned a {type(output_item)}')
 
-
     def _get_iterator(self):
         try:
             while True:
-                args = [copy(next(parent)) for parent in self.parents]
+                args = [next(parent) for parent in self.parents]
                 yield from self._apply_typecheck(*args)
         except StopIteration:
             return

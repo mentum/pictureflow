@@ -1,3 +1,4 @@
+from copy import deepcopy
 from pictureflow.core import Node
 
 
@@ -20,4 +21,4 @@ class Broadcast(Node):
 
     def apply(self, itm, count):
         for i in range(count):
-            yield itm
+            yield deepcopy(itm)
