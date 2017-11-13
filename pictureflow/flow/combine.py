@@ -1,4 +1,4 @@
-from pictureflow.core import Node, Image
+from pictureflow.core import Node
 
 
 class Combine(Node):
