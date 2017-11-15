@@ -7,6 +7,27 @@ from unittest.mock import patch
 import unittest
 
 
+def count_debug_nodes(graph):
+
+    queue = Queue()
+    queue.put(graph)
+
+    actual_debug_out_count = 0
+
+    while not queue.empty():
+        node = queue.get()
+
+        if isinstance(node, pf.output.DiskOutput) and hasattr(node, '_debug'):
+            actual_debug_out_count += 1
+
+        if hasattr(node, 'parents'):
+            for parent in node.parents:
+                queue.put(parent)
+
+    return actual_debug_out_count
+
+
+
 class TestSessionInitialize(unittest.TestCase):
 
     def test_session_initalize_sets_context(self):
@@ -159,19 +180,30 @@ class TestSessionWrapperAttachOutputs(unittest.TestCase):
 
         pf.core.session.SessionWrapper._attach_debug_outputs(graph)
 
-        queue = Queue()
-        queue.put(graph)
+        self.assertEqual(count_debug_nodes(graph), expected_debug_out_count)
 
-        actual_debug_out_count = 0
 
-        while not queue.empty():
-            node = queue.get()
+class TestSessionWrapperDetachDebugOutput(unittest.TestCase):
 
-            if isinstance(node, pf.output.DiskOutput) and hasattr(node, '_debug'):
-                actual_debug_out_count += 1
+    @staticmethod
+    def _get_graph():
+        graph = pf.Placeholder(out_type=pf.Image)
 
-            if hasattr(node, 'parents'):
-                for parent in node.parents:
-                    queue.put(parent)
+        graph = pf.transform.Rotate(graph, rot_angle=pf.Constant(90))
+        graph = pf.transform.Scale(graph, scale_factor=pf.Constant(0.1))
 
-        self.assertEqual(actual_debug_out_count, expected_debug_out_count)
+        graph = pf.output.DiskOutput(graph, base_path=pf.Constant('data/output/'))
+
+        return graph
+
+    def test_detach_debug_outputs_removes_all_disk_outputs(self):
+        graph = TestSessionWrapperAttachOutputs._get_graph()
+        expected_debug_out_count = 3
+
+        pf.core.session.SessionWrapper._attach_debug_outputs(graph)
+
+        self.assertEqual(count_debug_nodes(graph), expected_debug_out_count)
+
+        pf.core.session.SessionWrapper._detach_debug_outputs(graph)
+
+        self.assertEqual(count_debug_nodes(graph), 0)

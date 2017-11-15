@@ -59,8 +59,6 @@ class SessionWrapper(object):
                     if hasattr(parent, '_output_type') and parent._output_type == pf.Image:
                         disk = pf.output.DiskOutput(parent, pf.Constant('debug/'))
                         disk._debug = True
-
-                        print('Adding')
                         node.parents[i] = disk
 
                     queue.put(parent)
