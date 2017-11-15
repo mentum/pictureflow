@@ -39,7 +39,7 @@ class TestNodeInitialization(unittest.TestCase):
         self.assertFalse(n._typecheck_enabled)
 
     def test_node_sets_parents(self):
-        parents = ('a', 'b', 'c')
+        parents = ['a', 'b', 'c']
 
         n = pf.core.Node('node', *parents)
 
