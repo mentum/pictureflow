@@ -57,9 +57,10 @@ class SessionWrapper(object):
             if hasattr(node, 'parents'):
                 for i, parent in enumerate(node.parents):
                     if hasattr(parent, '_output_type') and parent._output_type == pf.Image:
-                        disk = pf.output.DiskOutput(parent, pf.Constant('debug/'), pf.Constant('debug-disk'))
+                        disk = pf.output.DiskOutput(parent, pf.Constant('debug/'))
                         disk._debug = True
 
+                        print('Adding')
                         node.parents[i] = disk
 
                     queue.put(parent)
@@ -75,7 +76,9 @@ class SessionWrapper(object):
             if hasattr(node, 'parents'):
                 for i, parent in enumerate(node.parents):
                     if isinstance(parent, pf.output.DiskOutput) and hasattr(parent, '_debug'):
-                        node.parents[i] = parent.parents[1]  # A disk output can only have one parent
+                        node.parents[i] = parent.parents[0]
+
+                    queue.put(parent)
 
     def run(self, graph, debug=False):
         """
