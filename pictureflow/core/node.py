@@ -8,7 +8,7 @@ class Node(object):
     node's parent.
 
     Args:
-        parent (Node<Image>): Parent node of this node
+        parent (Node): Parent node of this node
         id (str): ID of the node
     """
 

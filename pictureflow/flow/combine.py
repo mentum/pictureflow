@@ -4,10 +4,14 @@ from pictureflow.core import Node
 class Combine(Node):
 
     """
-    The oposite of the Broadcast node, allows the combination of multiple branches into a single branch
+    The opposite of the Broadcast node, allows the combination of multiple branches into a single branch
 
     Args:
-        parents (Node<Any>): Parent nodes
+        *parents (Node): Parent nodes
+
+    Attributes:
+        Input Types: None
+        Output Type: None
     """
 
     _input_types = None

@@ -11,8 +11,12 @@ class PathMask(Node):
     intact, and all those outside will be converted to black.
     
     Args:
-        parent (Node<Image>): Parent node
-        path (Node<np.array>): List of points forming the path
+        parent (Node): Parent image node
+        path (Node): List of points forming the path
+
+    Attributes:
+        Input Types: [ :py:class:`Image`, :py:class:`numpy.ndarray` ]
+        Output Type: :py:class:`Image`
     """
 
     _input_types = [Image, np.ndarray]

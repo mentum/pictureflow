@@ -38,7 +38,7 @@ class SessionWrapper(object):
     a :py:class:`Session` context manager.
 
     Args:
-        ctx: Placeholder context
+        ctx (dict): Placeholder context
     """
 
     _EXCLUDED_DEBUG_NODES = []
@@ -137,7 +137,7 @@ class Session(object):
     transformation graph(s).
 
     Args:
-        feed_dict (:code:`{Node: [values]}`): Dictionary providing context mapping
+        feed_dict (dict): Dictionary providing context mapping
     """
 
     def __init__(self, feed_dict):

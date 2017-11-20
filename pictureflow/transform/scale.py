@@ -9,9 +9,13 @@ class Scale(Node):
     Scale an image
     
     Args:
-        parent (Node<Image>): Parent node
-        scale_factor (Node<float>): Scale factor
+        parent (Node): Parent image node
+        scale_factor (Node): Scale factor
         id (str): ID of the node
+
+    Attributes:
+        Input Types: [ :py:class:`Image`, :py:class:`int` ]
+        Output Type: :py:class:`Image`
     """
 
     _input_types = [Image, float]

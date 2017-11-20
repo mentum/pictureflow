@@ -10,6 +10,20 @@ import cv2
 
 class ObjectDetector(Node):
 
+    """
+    Detect all objects in a binary image
+
+    Args:
+        parent (Node): Parent image node
+        path_drop_threshold (Node): Contour detector drop threshold
+        tgt_size (Node): Desired size of the output images
+        id (str): ID of the node
+
+    Attributes:
+        Input Types: [ :py:class:`Image`, :py:class:`list` , :py:class:`int` ]
+        Output Type: :py:class:`Image`
+    """
+
     _input_types = [Image, list, int]
     _output_type = Image
 

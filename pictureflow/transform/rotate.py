@@ -10,9 +10,13 @@ class Rotate(Node):
     Rotate an image.
     
     Args:
-        parent (Node<Image>): Parent node
-        rot_angle (Node<int>): Angle of rotation (defaults to 90 degrees when left blank)
+        parent (Node): Parent image node
+        rot_angle (Node): Angle of rotation (defaults to 90 degrees when left blank)
         id (str): ID of the node
+
+    Attributes:
+        Input Types: [ :py:class:`Image`, :py:class:`int` ]
+        Output Type: :py:class:`Image`
     """
 
     _input_types = [Image, int]
