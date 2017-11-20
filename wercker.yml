@@ -1,0 +1,17 @@
+box: python:3.6
+
+build:
+
+  steps:
+    - pip-install
+
+    - script:
+        name: echo python information
+        code: |
+          echo "python version $(python --version) running"
+          echo "pip version $(pip --version) running"
+
+    - script:
+        name: python unit tests
+        code: |
+          python -m unittest discover -v -s test
