@@ -10,9 +10,13 @@ class DiskOutput(Node):
     Output an image to disk
     
     Args:
-        parent (Node<Image>): Parent node
-        base_path (Node<string>): Output directory (will be created if nonexistent
+        parent (Node): Parent node
+        base_path (Node): Output directory (will be created if nonexistent)
         id (str): ID of the node
+
+    Attributes:
+        Input Types: [ :py:class:`Image`, :py:class:`str` ]
+        Output Type: :py:class:`Image`
     """
 
     _input_types = [Image, str]

@@ -1,7 +1,7 @@
 from pictureflow.core import Node
 
 
-class ConstantIterator(object):
+class _ConstantIterator(object):
 
     def __init__(self, val):
         self.val = val
@@ -36,7 +36,7 @@ class Constant(Node):
         super().__init__(id=id)
 
         self._output_type = type(value)
-        self.parents = [ConstantIterator(value)]
+        self.parents = [_ConstantIterator(value)]
 
     def apply(self, val):
         yield val

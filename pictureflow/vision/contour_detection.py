@@ -6,11 +6,15 @@ import cv2
 class ContourDetector(Node):
 
     """
-    Performs contour detection steps on a previously-masked image.
+    Performs contour detection steps on an already masked binary image.
 
     Args:
-        parent (Node<Any>): Parent nodes
-        drop_threshold (Node<int>): Minimum allowed contour area
+        parent (Node): Parent image nodes
+        drop_threshold (Node): Minimum allowed contour area
+
+    Attributes:
+        Input Types: [ :py:class:`Image`, :py:class:`int` ]
+        Output Type: :py:class:`list`
     """
 
     _input_types = [Image, int]

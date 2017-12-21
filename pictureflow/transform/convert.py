@@ -10,19 +10,23 @@ class Convert(Node):
     Converts an :py:class:`Image` from its original color space to another.
     
     Args:
-        parent (Node<Image>): Parent node
-        dest (Node<str>): Desired colorspace
+        parent (Node): Parent image node
+        dest (Node): Desired colorspace
         id (str): ID of the node
+
+    Attributes:
+        Input Types: [ :py:class:`Image`, :py:class:`str` ]
+        Output Type: :py:class:`Image`
     """
 
     _input_types = [Image, str]
-    _output_type = None
+    _output_type = Image
 
-    def __init__(self, parents, dest=None, id='convert'):
+    def __init__(self, parent, dest=None, id='convert'):
         if dest is None:
             dest = Constant('rgb')
 
-        super().__init__(id, parents, dest)
+        super().__init__(id, parent, dest)
 
         self.flags = [i for i in dir(cv2) if i.startswith('COLOR_')]
 
