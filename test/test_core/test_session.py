@@ -1,6 +1,31 @@
+from queue import Queue
+
 from test.context import pf
 
+from unittest.mock import patch
+
 import unittest
+
+
+def count_debug_nodes(graph):
+
+    queue = Queue()
+    queue.put(graph)
+
+    actual_debug_out_count = 0
+
+    while not queue.empty():
+        node = queue.get()
+
+        if isinstance(node, pf.output.DiskOutput) and hasattr(node, '_debug'):
+            actual_debug_out_count += 1
+
+        if hasattr(node, 'parents'):
+            for parent in node.parents:
+                queue.put(parent)
+
+    return actual_debug_out_count
+
 
 
 class TestSessionInitialize(unittest.TestCase):
@@ -54,6 +79,51 @@ class TestSessionWrapperRun(unittest.TestCase):
             next(generator)
             self.assertEqual(len(placeholder.parents), 1)
 
+    @patch('pictureflow.core.session.SessionWrapper._attach_debug_outputs')
+    def test_sessionwrapper_run_calls_attach_debug_when_in_debug(self, mock_attach):
+        placeholder = pf.Placeholder(out_type=int)
+
+        ctx = {placeholder: [1, 2, 3]}
+
+        with pf.Session(ctx) as sess:
+            generator = sess.run(placeholder, debug=True)
+            next(generator)
+            self.assertTrue(mock_attach.called)
+
+    @patch('pictureflow.core.session.SessionWrapper._attach_debug_outputs')
+    def test_sessionwrapper_run_doesnt_call_attach_debug_when_not_in_debug(self, mock_attach):
+        placeholder = pf.Placeholder(out_type=int)
+
+        ctx = {placeholder: [1, 2, 3]}
+
+        with pf.Session(ctx) as sess:
+            generator = sess.run(placeholder, debug=False)
+            next(generator)
+            self.assertFalse(mock_attach.called)
+
+    @patch('pictureflow.core.session.SessionWrapper._detach_debug_outputs')
+    def test_sessionwrapper_run_calls_detach_debug_when_in_debug(self, mock_detach):
+        placeholder = pf.Placeholder(out_type=int)
+
+        ctx = {placeholder: [1, 2, 3]}
+
+        with pf.Session(ctx) as sess:
+            generator = sess.run(placeholder, debug=True)
+            _ = [x for x in generator]
+            self.assertTrue(mock_detach.called)
+
+    @patch('pictureflow.core.session.SessionWrapper._detach_debug_outputs')
+    def test_sessionwrapper_run_doesnt_call_detach_debug_when_not_in_debug(self, mock_detach):
+        placeholder = pf.Placeholder(out_type=int)
+
+        ctx = {placeholder: [1, 2, 3]}
+
+        with pf.Session(ctx) as sess:
+            generator = sess.run(placeholder, debug=False)
+            _ = [x for x in generator]
+
+            self.assertFalse(mock_detach.called)
+
     def test_sessionwrapper_run_removes_generators_after_run(self):
 
         placeholder = pf.Placeholder(out_type=int)
@@ -89,3 +159,51 @@ class TestSessionWrapperRunSync(unittest.TestCase):
             output = sess.run_sync(placeholder)
 
         self.assertEqual(output, ctx[placeholder])
+
+
+class TestSessionWrapperAttachOutputs(unittest.TestCase):
+
+    @staticmethod
+    def _get_graph():
+        graph = pf.Placeholder(out_type=pf.Image)
+
+        graph = pf.transform.Rotate(graph, rot_angle=pf.Constant(90))
+        graph = pf.transform.Scale(graph, scale_factor=pf.Constant(0.1))
+
+        graph = pf.output.DiskOutput(graph, base_path=pf.Constant('data/output/'))
+
+        return graph
+
+    def test_attach_debug_outputs_appends_the_correct_number_of_disk_outputs(self):
+        graph = TestSessionWrapperAttachOutputs._get_graph()
+        expected_debug_out_count = 3
+
+        pf.core.session.SessionWrapper._attach_debug_outputs(graph)
+
+        self.assertEqual(count_debug_nodes(graph), expected_debug_out_count)
+
+
+class TestSessionWrapperDetachDebugOutput(unittest.TestCase):
+
+    @staticmethod
+    def _get_graph():
+        graph = pf.Placeholder(out_type=pf.Image)
+
+        graph = pf.transform.Rotate(graph, rot_angle=pf.Constant(90))
+        graph = pf.transform.Scale(graph, scale_factor=pf.Constant(0.1))
+
+        graph = pf.output.DiskOutput(graph, base_path=pf.Constant('data/output/'))
+
+        return graph
+
+    def test_detach_debug_outputs_removes_all_disk_outputs(self):
+        graph = TestSessionWrapperAttachOutputs._get_graph()
+        expected_debug_out_count = 3
+
+        pf.core.session.SessionWrapper._attach_debug_outputs(graph)
+
+        self.assertEqual(count_debug_nodes(graph), expected_debug_out_count)
+
+        pf.core.session.SessionWrapper._detach_debug_outputs(graph)
+
+        self.assertEqual(count_debug_nodes(graph), 0)

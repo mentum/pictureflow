@@ -25,7 +25,7 @@ class Node(object):
 
         self._iterator = self._get_iterator()
 
-        self.parents = parents
+        self.parents = list(parents)
 
     def _validate_parent_types(self, parents):
         if self._typecheck_enabled:

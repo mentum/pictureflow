@@ -1,5 +1,9 @@
 from copy import deepcopy
 
+from queue import Queue
+
+import pictureflow as pf
+
 
 class _PlaceholderGenerator(object):
 
@@ -37,15 +41,50 @@ class SessionWrapper(object):
         ctx: Placeholder context
     """
 
+    _EXCLUDED_DEBUG_NODES = []
+
     def __init__(self, ctx):
         self._ctx = ctx
 
-    def run(self, graph):
+    @staticmethod
+    def _attach_debug_outputs(graph):
+        queue = Queue()
+        queue.put(graph)
+
+        while not queue.empty():
+            node = queue.get()
+
+            if hasattr(node, 'parents'):
+                for i, parent in enumerate(node.parents):
+                    if hasattr(parent, '_output_type') and parent._output_type == pf.Image:
+                        disk = pf.output.DiskOutput(parent, pf.Constant('debug/'))
+                        disk._debug = True
+                        node.parents[i] = disk
+
+                    queue.put(parent)
+
+    @staticmethod
+    def _detach_debug_outputs(graph):
+        queue = Queue()
+        queue.put(graph)
+
+        while not queue.empty():
+            node = queue.get()
+
+            if hasattr(node, 'parents'):
+                for i, parent in enumerate(node.parents):
+                    if isinstance(parent, pf.output.DiskOutput) and hasattr(parent, '_debug'):
+                        node.parents[i] = parent.parents[0]
+
+                    queue.put(parent)
+
+    def run(self, graph, debug=False):
         """
         Do a lazy run of a transformation graph
 
         Args:
             graph (Node): Graph to execute
+            debug (bool): Debug mode
 
         Returns:
             iterator: Results iterator
@@ -56,6 +95,9 @@ class SessionWrapper(object):
             # TODO: Check for iterable dimensions
             placeholder.parents = [_PlaceholderGenerator(values)]
 
+        if debug:
+            self._attach_debug_outputs(graph)
+
         graph.reset()
 
         for itm in graph:
@@ -65,12 +107,16 @@ class SessionWrapper(object):
         for placeholder in self._ctx:
             placeholder.parents = []
 
-    def run_sync(self, graph):
+        if debug:
+            self._detach_debug_outputs(graph)
+
+    def run_sync(self, graph, debug=False):
         """
         Do a synchronous run of a transformation graph.
 
         Args:
             graph (Node): Graph to execute
+            debug (bool): Debug mode
 
         Returns:
             list: List of results
@@ -78,7 +124,7 @@ class SessionWrapper(object):
         """
         out = []
 
-        for itm in self.run(graph):
+        for itm in self.run(graph, debug):
             out.append(itm)
 
         return out
