@@ -8,12 +8,17 @@ class ColorMask(Node):
     Apply a color mask to the image.
     
     Args:
-        parent (Node<Image>): Parent node
-        color_mask (Node<List>): Color mask to apply (:code:`None` to ignore the color component)
+        parent (Node): Parent node
+        color_mask (Node): Color mask to apply (:code:`None` to ignore the color component)
         id (str): ID of the node
+
+    Attributes:
+        Input Types: [ :py:class:`Image` ]
+        Output Type: :py:class:`Image`
     """
 
     _input_types = [Image, list]
+
     _output_type = Image
 
     def __init__(self, parent, color_mask=None, id='colormask'):
