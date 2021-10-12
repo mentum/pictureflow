@@ -22,6 +22,6 @@ setup(
     long_description=readme,
     install_requires=[
         "numpy",
-        "opencv-python==3.3.0.10"
+        "opencv-python==3.4.7.28"
     ]
 )
